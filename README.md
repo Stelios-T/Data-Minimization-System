@@ -5,4 +5,5 @@ The issue of privacy and data is becoming increasingly legislated and is one of 
 
 The system uses a Semantic Web Model for the personal data type - services type relations 
 
-![image](https://user-images.githubusercontent.com/67365815/203764875-e2bba042-9e04-49de-a027-cf375a26b91c.png)
+![image](https://user-images.githubusercontent.com/67365815/203765044-5de976f5-9992-4269-8386-73d95fd3b2b9.png)
+ 
