@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:d="data:"
+	xmlns:s="service:"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+<rdf:Description rdf:about="data:Identity">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:FullName">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:FirstName">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:MiddleName">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:LastName">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:IDCard">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:IDNumber">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:PersonalSign">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:FatherName">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:MotherName">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Passport">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:PassportNumber">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Contact">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:TelephoneNumber">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Email">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:FaxNumber">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Location">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:StreetAddress">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:StreetName">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:StreetNumber">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:City">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Country">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Age">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:IsAdult">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:ExactAge">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:DateOfBirth">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:DayOfBirth">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:MonthOfBirth">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:YearOfBirth">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Billing">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Account">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:AccountNumber">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:AccountBalance">
+	<rdf:type rdf:resource="data:PersonalData"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:SignInvoice">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:LocalInfoFinder">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:MapProvision">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:ShopFinder">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:RestaurantFinder">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:OrderPlacement">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:EntryAllowance">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:CheckoutPay">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:CheckoutPayAdult">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:AirportCheckIn">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:SubscriptionPay">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:SubscriptionSignUp">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:PostalFormFilling">
+	<rdf:type rdf:resource="service:Service"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:FullName">
+	<d:isA rdf:resource="data:Identity"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:IDCard">
+	<d:isA rdf:resource="data:Identity"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Passport">
+	<d:isA rdf:resource="data:Identity"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:PassportNumber">
+	<d:isPartOf rdf:resource="data:Passport"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:FirstName">
+	<d:isPartOf rdf:resource="data:FullName"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:MiddleName">
+	<d:isPartOf rdf:resource="data:FullName"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:LastName">
+	<d:isPartOf rdf:resource="data:FullName"/>
+	<d:isMoreDetailedThan rdf:resource="data:FirstName"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:IDNumber">
+	<d:isPartOf rdf:resource="data:IDCard"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:PersonalSign">
+	<d:isPartOf rdf:resource="data:IDCard"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:FatherName">
+	<d:isPartOf rdf:resource="data:IDCard"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:MotherName">
+	<d:isPartOf rdf:resource="data:IDCard"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:FullName">
+	<d:isPartOf rdf:resource="data:IDCard"/>
+	<d:isPartOf rdf:resource="data:Passport"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:TelephoneNumber">
+	<d:isA rdf:resource="data:Contact"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Email">
+	<d:isA rdf:resource="data:Contact"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:FaxNumber">
+	<d:isA rdf:resource="data:Contact"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:StreetAddress">
+	<d:isA rdf:resource="data:Location"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:City">
+	<d:isA rdf:resource="data:Location"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Country">
+	<d:isA rdf:resource="data:Location"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:StreetName">
+	<d:isPartOf rdf:resource="data:StreetAddress"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:StreetNumber">
+	<d:isPartOf rdf:resource="data:StreetAddress"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:City">
+	<d:isMoreDetailedThan rdf:resource="data:Country"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:StreetAddress">
+	<d:isMoreDetailedThan rdf:resource="data:City"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:IsAdult">
+	<d:isA rdf:resource="data:Age"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:ExactAge">
+	<d:isA rdf:resource="data:Age"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:DateOfBirth">
+	<d:isA rdf:resource="data:Age"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:DayOfBirth">
+	<d:isPartOf rdf:resource="data:DateOfBirth"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:MonthOfBirth">
+	<d:isPartOf rdf:resource="data:DateOfBirth"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:YearOfBirth">
+	<d:isPartOf rdf:resource="data:DateOfBirth"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:DateOfBirth">
+	<d:isPartOf rdf:resource="data:IDCard"/>
+	<d:isPartOf rdf:resource="data:Passport"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Country">
+	<d:isPartOf rdf:resource="data:Passport"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:ExactAge">
+	<d:isMoreDetailedThan rdf:resource="data:IsAdult"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:DateOfBirth">
+	<d:isMoreDetailedThan rdf:resource="data:ExactAge"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:Account">
+	<d:isA rdf:resource="data:Billing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:AccountNumber">
+	<d:isPartOf rdf:resource="data:Account"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="data:AccountBalance">
+	<d:isPartOf rdf:resource="data:Account"/>
+	<d:isMoreDetailedThan rdf:resource="data:AccountNumber"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:SignInvoice">
+	<s:requires rdf:resource="data:PersonalSign"/>
+	<s:mayRequires rdf:resource="data:FirstName"/>
+	<s:mayRequires rdf:resource="data:LastName"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:LocalInfoFinder">
+	<s:requires rdf:resource="data:City"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:MapProvision">
+	<s:requires rdf:resource="data:City"/>
+	<s:mayRequires rdf:resource="data:Country"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:ShopFinder">
+	<s:requires rdf:resource="data:City"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:RestaurantFinder">
+	<s:requires rdf:resource="data:City"/>
+	<s:mayRequires rdf:resource="data:IsAdult"/>
+	<s:mayRequires rdf:resource="data:ExactAge"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:OrderPlacement">
+	<s:requires rdf:resource="data:FirstName"/>
+	<s:requires rdf:resource="data:LastName"/>
+	<s:requires rdf:resource="data:Email"/>
+	<s:mayRequires rdf:resource="data:AccountNumber"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:EntryAllowance">
+	<s:requires rdf:resource="data:IsAdult"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:CheckoutPay">
+	<s:requires rdf:resource="data:AccountNumber"/>
+	<s:requires rdf:resource="data:AccountBalance"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:CheckoutPayAdult">
+	<s:requires rdf:resource="data:IsAdult"/>
+	<s:requires rdf:resource="data:AccountNumber"/>
+	<s:requires rdf:resource="data:AccountBalance"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:AirportCheckIn">
+	<s:requires rdf:resource="data:PassportNumber"/>
+	<s:requires rdf:resource="data:FirstName"/>
+	<s:requires rdf:resource="data:MiddleName"/>
+	<s:mayRequires rdf:resource="data:IDNumber"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:SubscriptionPay">
+	<s:requires rdf:resource="data:AccountNumber"/>
+	<s:requires rdf:resource="data:AccountBalance"/>
+	<s:mayRequires rdf:resource="data:Email"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:SubscriptionSignUp">
+	<s:requires rdf:resource="data:FirstName"/>
+	<s:requires rdf:resource="data:LastName"/>
+	<s:requires rdf:resource="data:Email"/>
+	<s:mayRequires rdf:resource="data:TelephoneNumber"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="service:PostalFormFilling">
+	<s:requires rdf:resource="data:Country"/>
+	<s:requires rdf:resource="data:City"/>
+	<s:requires rdf:resource="data:StreetName"/>
+	<s:requires rdf:resource="data:StreetNumber"/>
+	<s:mayRequires rdf:resource="data:Email"/>
+	<s:mayRequires rdf:resource="data:TelephoneNumber"/>
+</rdf:Description>
+
+</rdf:RDF>
