@@ -9,13 +9,14 @@ More specifically, two graphs were created which are related to each other. A Pe
 
 PersonalDataGraph:
 
-![image](https://user-images.githubusercontent.com/67365815/203769875-43ca1a25-96d2-484e-9a4e-b7aebd9c725d.png)
+![Screenshot 2022-09-21 143735](https://user-images.githubusercontent.com/67365815/203770295-b675b1de-0bbe-4056-bf0b-a3dfd6dc45a4.jpg)
+
 
 ServicesGraph:
 
-![image](https://user-images.githubusercontent.com/67365815/203769981-0add3295-b043-4357-bd05-18df7d43825c.png)
+![Screenshot 2022-09-21 152843](https://user-images.githubusercontent.com/67365815/203770345-dabfc826-7e60-4978-894e-fa1379012491.jpg)
 
 
 Final Model:
-![image](https://user-images.githubusercontent.com/67365815/203765044-5de976f5-9992-4269-8386-73d95fd3b2b9.png)
- 
+![Screenshot 2022-09-09 145404](https://user-images.githubusercontent.com/67365815/203770370-d809e080-2e75-418d-b08d-b2a37fde2509.jpg)
+
