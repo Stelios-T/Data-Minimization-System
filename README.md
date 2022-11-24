@@ -20,4 +20,32 @@ More specifically, two graphs were created which are related to each other. A Pe
 #### Final Model:
 ![Screenshot 2022-09-09 145404](https://user-images.githubusercontent.com/67365815/203770370-d809e080-2e75-418d-b08d-b2a37fde2509.jpg)
 
-## How to use
+
+
+## How to run
+
+The system is build as a MAVEN project. Download the code and run it as is.
+
+
+## Testing
+
+```
+ArrayList<String> service_required_data = new ArrayList<String>();
+```
+test 
+
+```
+service_required_data.add("data:IDCard");
+service_required_data.add("data:Email");
+service_required_data.add("data:IsAdult");
+```
+
+```
+DecisionMaker filter = new DecisionMaker(main_model.getModel());
+```
+sfsf
+
+```
+filter.DataMinimizationFilter("service:SubscriptionSignUp", service_required_data);
+```
+
