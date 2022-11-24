@@ -22,30 +22,44 @@ More specifically, two graphs were created which are related to each other. A Pe
 
 
 
+## Personal Data and Services
+
+Types of Personal Data and Services used in this project can be seen from the **Final Model** above 
+
+
 ## How to run
 
 The system is build as a MAVEN project. Download the code and run it as is.
 
 
+
 ## Testing
 
-```
-ArrayList<String> service_required_data = new ArrayList<String>();
-```
-test 
 
+In ```MainModel.java``` 
+
+
+**Add the type of personal data to test** 
+
+```
+service_required_data.add("data: <Personal Data> ");
+```
+
+*Example:*
 ```
 service_required_data.add("data:IDCard");
 service_required_data.add("data:Email");
 service_required_data.add("data:IsAdult");
 ```
 
-```
-DecisionMaker filter = new DecisionMaker(main_model.getModel());
-```
-sfsf
 
+**Add the type of service to test with the personal data** 
+
+```
+filter.DataMinimizationFilter("service: <Service> ", service_required_data);
+```
+
+*Example:*
 ```
 filter.DataMinimizationFilter("service:SubscriptionSignUp", service_required_data);
 ```
-
