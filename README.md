@@ -8,9 +8,11 @@ An RDF model was constructed, which represents a knowledge graph that presents t
 More specifically, two graphs were created which are related to each other. A PersonalDataGraph graph and a ServicesGraph. Within the graph some namespace identifiers have been given which distinguish when the elements of the graph are data types or services. For this reason we have data: for the types of personal data and service: for the types of services.
 
 PersonalDataGraph:
+
 ![image](https://user-images.githubusercontent.com/67365815/203769875-43ca1a25-96d2-484e-9a4e-b7aebd9c725d.png)
 
 ServicesGraph:
+
 ![image](https://user-images.githubusercontent.com/67365815/203769981-0add3295-b043-4357-bd05-18df7d43825c.png)
 
 
