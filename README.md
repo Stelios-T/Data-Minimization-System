@@ -56,17 +56,18 @@ Privacy is one of the most heavily legislated issues of modern societies, driven
 
 The principle is easy to state and hard to apply: a service that needs to know whether a customer is an adult can be handed a full identity card, which also reveals a name, an exact date of birth, a parent's names and an ID number. This repository shows how semantic web technologies can make that judgement automatically. A knowledge graph describes the types of personal data, how they relate to each other, and which data each service needs. A decision component queries the graph to classify every offered datum and to report what is missing.
 
+
 ## The knowledge graph
 
 The graph is written in Turtle in [`src/main/resources/model.ttl`](src/main/resources/model.ttl) and is the single source of truth: the Java code loads it at start-up and contains no knowledge of its own. It has two vocabularies, `data:` for personal data types and `srv:` for services, and five relations.
 
-| Relation | Meaning | Consequence for minimization |
-|---|---|---|
-| `X data:isA Y` | X is a specialisation of Y. *Email is a Contact.* | Providing X **satisfies** a need for Y. Providing Y does **not** provide X. |
-| `X data:isPartOf Y` | X is contained in Y. *IDNumber is part of IDCard.* | Providing Y **also discloses** X. |
-| `X data:isMoreDetailedThan Y` | Y can be derived from X. *IsAdult from DateOfBirth.* | Providing X **also discloses** Y. |
-| `S srv:requires D` | S cannot work without D. | D must be covered by something offered. |
-| `S srv:mayRequires D` | S can optionally use D. | D is accepted but never demanded. |
+| Relation                        | Meaning                                                | Consequence for minimization                                                            |
+| ------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `X data:isA Y`                | X is a specialisation of Y. *Email is a Contact.*    | Providing X **satisfies** a need for Y. Providing Y does **not** provide X. |
+| `X data:isPartOf Y`           | X is contained in Y. *IDNumber is part of IDCard.*   | Providing Y **also discloses** X.                                                 |
+| `X data:isMoreDetailedThan Y` | Y can be derived from X. *IsAdult from DateOfBirth.* | Providing X **also discloses** Y.                                                 |
+| `S srv:requires D`            | S cannot work without D.                               | D must be covered by something offered.                                                 |
+| `S srv:mayRequires D`         | S can optionally use D.                                | D is accepted but never demanded.                                                       |
 
 `isPartOf` and `isMoreDetailedThan` are declared `owl:TransitiveProperty`. The code never walks the graph by hand. Everything that handing over a datum discloses or satisfies is one SPARQL 1.1 property-path query against an in-memory rdf4j store:
 
@@ -96,23 +97,23 @@ Three corrections were made to the model after the diagrams were drawn. `Airport
 
 For a service and a set of offered data the filter returns a `Decision` holding one assessment per distinct datum.
 
-| Status | Meaning | Action |
-|---|---|---|
-| `REQUIRED` | Named by the service as required. | Accept. |
-| `OPTIONAL` | Named by the service as optional. | Accept. |
-| `SATISFIES` | Not named, but discloses only data the service needs: a specialisation, or a container of exactly the needed parts. | Accept. |
-| `SUPERSET` | Discloses needed data **and** data the service does not need. | Request the listed narrower data instead. |
-| `EXCESSIVE` | Discloses nothing the service needs. | Reject. |
-| `UNKNOWN` | Not a personal data type in the graph. | Reject. |
+| Status        | Meaning                                                                                                             | Action                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `REQUIRED`  | Named by the service as required.                                                                                   | Accept.                                   |
+| `OPTIONAL`  | Named by the service as optional.                                                                                   | Accept.                                   |
+| `SATISFIES` | Not named, but discloses only data the service needs: a specialisation, or a container of exactly the needed parts. | Accept.                                   |
+| `SUPERSET`  | Discloses needed data **and** data the service does not need.                                                 | Request the listed narrower data instead. |
+| `EXCESSIVE` | Discloses nothing the service needs.                                                                                | Reject.                                   |
+| `UNKNOWN`   | Not a personal data type in the graph.                                                                              | Reject.                                   |
 
 The decision also lists the required data that nothing offered covers, and an overall verdict:
 
-| Verdict | All required data covered | Nothing excessive offered |
-|---|---|---|
-| `COMPLIANT` | yes | yes |
-| `EXCESSIVE` | yes | no |
-| `INCOMPLETE` | no | yes |
-| `INCOMPLETE_AND_EXCESSIVE` | no | no |
+| Verdict                      | All required data covered | Nothing excessive offered |
+| ---------------------------- | ------------------------- | ------------------------- |
+| `COMPLIANT`                | yes                       | yes                       |
+| `EXCESSIVE`                | yes                       | no                        |
+| `INCOMPLETE`               | no                        | yes                       |
+| `INCOMPLETE_AND_EXCESSIVE` | no                        | no                        |
 
 ## Command-line usage
 
