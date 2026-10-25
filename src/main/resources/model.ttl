@@ -1,0 +1,148 @@
+# Knowledge graph for the Data Minimization System.
+#
+# Two vocabularies:
+#   data:  types of personal data and the relations between them
+#   srv:   services and the personal data they need
+#
+# Relation semantics (direction matters):
+#   X data:isA Y                 X is a specialisation of Y.   Providing X satisfies a need for Y.
+#   X data:isPartOf Y            X is contained in Y.          Providing Y also hands over X.
+#   X data:isMoreDetailedThan Y  Y can be derived from X.      Providing X also hands over Y.
+#   S srv:requires D             S cannot work without D.
+#   S srv:mayRequires D          S can optionally use D.
+
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix data: <http://example.org/dms/data#> .
+@prefix srv:  <http://example.org/dms/service#> .
+
+#################################################################
+# Schema
+#################################################################
+
+data:PersonalData a rdfs:Class ;
+    rdfs:label "Personal data type" .
+
+srv:Service a rdfs:Class ;
+    rdfs:label "Service" .
+
+data:isA a rdf:Property , owl:TransitiveProperty ;
+    rdfs:domain data:PersonalData ; rdfs:range data:PersonalData ;
+    rdfs:comment "The subject is a specialisation of the object. Providing the subject satisfies a need for the object." .
+
+data:isPartOf a rdf:Property , owl:TransitiveProperty ;
+    rdfs:domain data:PersonalData ; rdfs:range data:PersonalData ;
+    rdfs:comment "The subject is contained in the object. Providing the object also discloses the subject." .
+
+data:isMoreDetailedThan a rdf:Property , owl:TransitiveProperty ;
+    rdfs:domain data:PersonalData ; rdfs:range data:PersonalData ;
+    rdfs:comment "The object can be derived from the subject. Providing the subject also discloses the object." .
+
+srv:requires a rdf:Property ;
+    rdfs:domain srv:Service ; rdfs:range data:PersonalData ;
+    rdfs:comment "Personal data without which the service cannot be delivered." .
+
+srv:mayRequires a rdf:Property ;
+    rdfs:domain srv:Service ; rdfs:range data:PersonalData ;
+    rdfs:comment "Personal data the service can optionally use." .
+
+#################################################################
+# Personal data types
+#################################################################
+
+data:Identity        a data:PersonalData .
+data:FullName        a data:PersonalData ; data:isA data:Identity .
+data:FirstName       a data:PersonalData ; data:isPartOf data:FullName .
+data:MiddleName      a data:PersonalData ; data:isPartOf data:FullName .
+data:LastName        a data:PersonalData ; data:isPartOf data:FullName .
+
+data:IDCard          a data:PersonalData ; data:isA data:Identity .
+data:IDNumber        a data:PersonalData ; data:isPartOf data:IDCard .
+data:PersonalSign    a data:PersonalData ; data:isPartOf data:IDCard .
+data:FatherName      a data:PersonalData ; data:isPartOf data:IDCard .
+data:MotherName      a data:PersonalData ; data:isPartOf data:IDCard .
+
+data:Passport        a data:PersonalData ; data:isA data:Identity .
+data:PassportNumber  a data:PersonalData ; data:isPartOf data:Passport .
+
+# A full name and a date of birth are printed on both documents; a passport also states the country.
+data:FullName        data:isPartOf data:IDCard , data:Passport .
+data:DateOfBirth     data:isPartOf data:IDCard , data:Passport .
+data:Country         data:isPartOf data:Passport .
+
+data:Contact         a data:PersonalData .
+data:TelephoneNumber a data:PersonalData ; data:isA data:Contact .
+data:Email           a data:PersonalData ; data:isA data:Contact .
+data:FaxNumber       a data:PersonalData ; data:isA data:Contact .
+
+data:Location        a data:PersonalData .
+data:StreetAddress   a data:PersonalData ; data:isA data:Location ; data:isMoreDetailedThan data:City .
+data:StreetName      a data:PersonalData ; data:isPartOf data:StreetAddress .
+data:StreetNumber    a data:PersonalData ; data:isPartOf data:StreetAddress .
+data:City            a data:PersonalData ; data:isA data:Location ; data:isMoreDetailedThan data:Country .
+data:Country         a data:PersonalData ; data:isA data:Location .
+
+data:Age             a data:PersonalData .
+data:IsAdult         a data:PersonalData ; data:isA data:Age .
+data:ExactAge        a data:PersonalData ; data:isA data:Age ; data:isMoreDetailedThan data:IsAdult .
+data:DateOfBirth     a data:PersonalData ; data:isA data:Age ; data:isMoreDetailedThan data:ExactAge .
+data:DayOfBirth      a data:PersonalData ; data:isPartOf data:DateOfBirth .
+data:MonthOfBirth    a data:PersonalData ; data:isPartOf data:DateOfBirth .
+data:YearOfBirth     a data:PersonalData ; data:isPartOf data:DateOfBirth .
+
+data:Billing         a data:PersonalData .
+data:Account         a data:PersonalData ; data:isA data:Billing .
+data:AccountNumber   a data:PersonalData ; data:isPartOf data:Account .
+data:AccountBalance  a data:PersonalData ; data:isPartOf data:Account .
+
+#################################################################
+# Services and the data they need
+#################################################################
+
+srv:SignInvoice a srv:Service ;
+    srv:requires    data:PersonalSign ;
+    srv:mayRequires data:FirstName , data:LastName .
+
+srv:LocalInfoFinder a srv:Service ;
+    srv:requires    data:City .
+
+srv:MapProvision a srv:Service ;
+    srv:requires    data:City ;
+    srv:mayRequires data:Country .
+
+srv:ShopFinder a srv:Service ;
+    srv:requires    data:City .
+
+srv:RestaurantFinder a srv:Service ;
+    srv:requires    data:City ;
+    srv:mayRequires data:IsAdult , data:ExactAge .
+
+srv:OrderPlacement a srv:Service ;
+    srv:requires    data:FirstName , data:LastName , data:Email ;
+    srv:mayRequires data:AccountNumber .
+
+srv:EntryAllowance a srv:Service ;
+    srv:requires    data:IsAdult .
+
+srv:CheckoutPay a srv:Service ;
+    srv:requires    data:AccountNumber , data:AccountBalance .
+
+srv:CheckoutPayAdult a srv:Service ;
+    srv:requires    data:IsAdult , data:AccountNumber , data:AccountBalance .
+
+srv:AirportCheckIn a srv:Service ;
+    srv:requires    data:PassportNumber , data:FirstName , data:LastName ;
+    srv:mayRequires data:IDNumber .
+
+srv:SubscriptionPay a srv:Service ;
+    srv:requires    data:AccountNumber , data:AccountBalance ;
+    srv:mayRequires data:Email .
+
+srv:SubscriptionSignUp a srv:Service ;
+    srv:requires    data:FirstName , data:LastName , data:Email ;
+    srv:mayRequires data:TelephoneNumber .
+
+srv:PostalFormFilling a srv:Service ;
+    srv:requires    data:Country , data:City , data:StreetName , data:StreetNumber ;
+    srv:mayRequires data:Email , data:TelephoneNumber .
