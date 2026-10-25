@@ -2,6 +2,7 @@
 
 A knowledge-graph based system that decides, in real time, whether the personal data a user offers to a service are **adequate, relevant and limited to what is necessary** for that service, as required by the GDPR data minimization principle (Art. 5(1)(c)).
 
+
 Given a service and a set of offered data types, the system answers three questions:
 
 1. Which offered data are needed as they are, and which are not needed at all?
@@ -55,7 +56,6 @@ java -jar target/dms.jar --service CheckoutPayAdult --data DateOfBirth,Account
 Privacy is one of the most heavily legislated issues of modern societies, driven by the volume of personal data that technology makes it possible to collect and process. The European Union's General Data Protection Regulation sets out a small number of principles that every processing operation must respect. One of them, data minimization, states that personal data must be adequate, relevant and limited to what is necessary for the purposes for which they are processed.
 
 The principle is easy to state and hard to apply: a service that needs to know whether a customer is an adult can be handed a full identity card, which also reveals a name, an exact date of birth, a parent's names and an ID number. This repository shows how semantic web technologies can make that judgement automatically. A knowledge graph describes the types of personal data, how they relate to each other, and which data each service needs. A decision component queries the graph to classify every offered datum and to report what is missing.
-
 
 ## The knowledge graph
 
