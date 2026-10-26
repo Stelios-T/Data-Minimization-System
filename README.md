@@ -995,6 +995,10 @@ Check your version:
 java -version
 ```
 
+### `class file has wrong version 69.0, should be 61.0`
+
+A dependency was compiled for a newer Java than the build targets. Every rdf4j 6.x release is compiled for Java 25, so the project pins rdf4j 5.x to keep working on JDK 17. If you bump rdf4j to 6.x, raise `maven.compiler.release` in `pom.xml` and the JDK matrix in `.github/workflows/ci.yml` together. The Jetty and SLF4J entries at the top of `dependencyManagement` must stay ahead of the rdf4j BOM, which would otherwise pin Jetty 9.4 and SLF4J 1.7.
+
 Install a supported JDK and make sure your environment uses it.
 
 ### `Unknown service`, `has no purpose`, or `Unknown condition`

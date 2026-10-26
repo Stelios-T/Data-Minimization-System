@@ -9,7 +9,11 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <rdf4j.version>6.1.0</rdf4j.version>
+    <!-- rdf4j 6.x needs Java 25; 5.x targets Java 11 and keeps the JDK 17 floor -->
+    <rdf4j.version>5.2.0</rdf4j.version>
+    <!-- must match the Jetty line Javalin ${javalin.version} is built against -->
+    <jetty.version>12.1.14</jetty.version>
+    <javalin.version>7.2.4</javalin.version>
     <jackson.version>2.22.4</jackson.version>
     <slf4j.version>2.0.17</slf4j.version>
     <junit.version>5.14.4</junit.version>
@@ -18,6 +22,33 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Jetty first: the rdf4j BOM also manages org.eclipse.jetty and would pin the 9.4 line,
+           which cannot be mixed with the Jetty 12 modules Javalin uses. First import wins. -->
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-bom</artifactId>
+        <version>${jetty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.ee10</groupId>
+        <artifactId>jetty-ee10-bom</artifactId>
+        <version>${jetty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- SLF4J 2.x API for everything; the rdf4j BOM would pin 1.7, which cannot find a 2.x binding -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.eclipse.rdf4j</groupId>
         <artifactId>rdf4j-bom</artifactId>
@@ -76,7 +107,7 @@
     <dependency>
       <groupId>io.javalin</groupId>
       <artifactId>javalin</artifactId>
-      <version>7.2.4</version>
+      <version>${javalin.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>

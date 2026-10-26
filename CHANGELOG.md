@@ -13,6 +13,9 @@
 - **Payload minimizer** (`--minimize`): apply a decision to a JSON object, computing narrower values locally (adult flag from a birth date, names from a full name, members of objects).
 - **Evaluation harness** (`--evaluate`): 38 labelled decision scenarios and 5 plan scenarios, comparison with an exact-match baseline, latency and scale benchmarks written to `docs/evaluation.md`.
 
+### Build fix
+- rdf4j pinned to 5.2.0: every rdf4j 6.x release is compiled for Java 25 and broke the JDK 17 and 21 CI jobs. Jetty 12.1 and SLF4J 2.0 are managed explicitly ahead of the rdf4j BOM, which would otherwise pin Jetty 9.4 and SLF4J 1.7. Verified with a full CI-equivalent run on JDK 17.
+
 ### Review fixes
 - Every collection of data types in results is sorted by name, so `--json`, `--rdf` and API output are identical across runs.
 - Explicit JSON contract (`compliant`, `complete`, `substitutes`, `disclosed` are deliberate fields; derived accessors are excluded) with a test asserting the field sets.
