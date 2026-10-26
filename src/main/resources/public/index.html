@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Minimization System</title>
+<style>
+  :root { color-scheme: light dark;
+    --bg: #f6f7f9; --panel: #ffffff; --ink: #1b1f24; --muted: #5b6470; --line: #d9dee5; --accent: #1f6feb;
+    --ok: #1a7f37; --warn: #9a6700; --bad: #cf222e; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  @media (prefers-color-scheme: dark) { :root {
+    --bg: #0f1216; --panel: #161b22; --ink: #e6edf3; --muted: #9aa4b2; --line: #30363d; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --bad: #f85149; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--ink); }
+  header { padding: 20px 24px 8px; }
+  header h1 { margin: 0 0 4px; font-size: 20px; }
+  header p { margin: 0; color: var(--muted); }
+  main { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 16px; padding: 16px 24px 32px; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  label.block { display: block; font-weight: 600; margin: 12px 0 6px; }
+  select, textarea, button { font: inherit; color: inherit; }
+  select, textarea { width: 100%; padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  textarea { font-family: var(--mono); font-size: 13px; min-height: 120px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .tabs button { padding: 8px 12px; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; cursor: pointer; }
+  .tabs button[aria-selected="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .group { margin: 8px 0; }
+  .group h4 { margin: 8px 0 4px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; cursor: pointer; user-select: none; }
+  .chip input { margin: 0; }
+  .chip small { color: var(--muted); }
+  .run { margin-top: 14px; padding: 10px 16px; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 600; cursor: pointer; }
+  .verdict { display: inline-block; padding: 4px 10px; border-radius: 999px; font-weight: 700; margin-bottom: 10px; }
+  .COMPLIANT { background: color-mix(in srgb, var(--ok) 18%, transparent); color: var(--ok); }
+  .EXCESSIVE, .INCOMPLETE { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+  .INCOMPLETE_AND_EXCESSIVE, .error { background: color-mix(in srgb, var(--bad) 18%, transparent); color: var(--bad); }
+  pre { margin: 0; padding: 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; overflow: auto; font: 13px/1.4 var(--mono); white-space: pre-wrap; }
+  details { margin-top: 12px; } summary { cursor: pointer; color: var(--muted); }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Data Minimization System</h1>
+  <p>Decide which personal data a service may receive for a purpose, plan what a user agent should disclose, or minimize a real payload.</p>
+</header>
+<main>
+  <section class="panel">
+    <label class="block" for="service">Service</label>
+    <select id="service"></select>
+    <label class="block" for="purpose">Purpose</label>
+    <select id="purpose"></select>
+    <div id="conditions" class="group"></div>
+
+    <div class="tabs" role="tablist" style="margin-top:16px">
+      <button role="tab" aria-selected="true" data-tab="evaluate">Evaluate</button>
+      <button role="tab" aria-selected="false" data-tab="plan">Plan</button>
+      <button role="tab" aria-selected="false" data-tab="minimize">Minimize</button>
+    </div>
+
+    <div data-pane="evaluate">
+      <p style="color:var(--muted);margin:0">Tick the data a user offers to the service.</p>
+      <div id="data-evaluate"></div>
+    </div>
+    <div data-pane="plan" class="hidden">
+      <p style="color:var(--muted);margin:0">Tick the data the user agent holds. The plan says what to extract, derive or send.</p>
+      <div id="data-plan"></div>
+      <label class="chip" style="margin-top:8px"><input type="checkbox" id="includeOptional"> also plan optional data</label>
+    </div>
+    <div data-pane="minimize" class="hidden">
+      <label class="block" for="payload">Payload (JSON object)</label>
+      <textarea id="payload">{
+  "id_card": { "idNumber": "AK123456", "fullName": "Maria Papadopoulou", "dateOfBirth": "1990-05-17" },
+  "email": "maria@example.org",
+  "is_adult": true,
+  "newsletter": true
+}</textarea>
+      <label class="block" for="mapping">Field to data type mapping</label>
+      <textarea id="mapping" style="min-height:70px">{ "id_card": "IDCard", "email": "Email", "is_adult": "IsAdult" }</textarea>
+      <label class="chip" style="margin-top:8px"><input type="checkbox" id="keepUnmapped"> keep unmapped fields</label>
+    </div>
+    <button class="run" id="run">Run</button>
+  </section>
+
+  <section class="panel">
+    <div id="verdict"></div>
+    <pre id="report">Choose a service and some data, then press Run.</pre>
+    <details><summary>Raw JSON</summary><pre id="raw"></pre></details>
+  </section>
+</main>
+<script>
+(async function () {
+  const $ = (id) => document.getElementById(id);
+  const state = { tab: 'evaluate', services: [], data: [] };
+
+  async function api(path, body) {
+    const res = await fetch(path, body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } : undefined);
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || res.statusText);
+    return json;
+  }
+
+  function chips(container, items, nameAttr, withCost) {
+    const groups = {};
+    items.forEach((d) => { (groups[d.group || ''] ||= []).push(d); });
+    container.innerHTML = '';
+    Object.keys(groups).sort().forEach((g) => {
+      const div = document.createElement('div'); div.className = 'group';
+      if (g) { const h = document.createElement('h4'); h.textContent = g; div.appendChild(h); }
+      const wrap = document.createElement('div'); wrap.className = 'chips';
+      groups[g].forEach((d) => {
+        const label = document.createElement('label'); label.className = 'chip';
+        const input = document.createElement('input'); input.type = 'checkbox'; input.value = d.name; input.name = nameAttr;
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(d.name));
+        if (withCost) { const s = document.createElement('small'); s.textContent = '(' + d.cost + ')'; label.appendChild(s); }
+        wrap.appendChild(label);
+      });
+      div.appendChild(wrap); container.appendChild(div);
+    });
+  }
+
+  function checked(nameAttr) {
+    return [...document.querySelectorAll('input[name="' + nameAttr + '"]:checked')].map((i) => i.value);
+  }
+
+  function currentService() { return state.services.find((s) => s.name === $('service').value); }
+
+  function renderService() {
+    const s = currentService();
+    const purpose = $('purpose');
+    purpose.innerHTML = '<option value="">All purposes</option>' + s.purposes.map((p) => '<option>' + p + '</option>').join('');
+    const cond = $('conditions');
+    cond.innerHTML = '';
+    if (s.conditions.length) {
+      const h = document.createElement('h4'); h.textContent = 'Conditions that hold'; cond.appendChild(h);
+      const wrap = document.createElement('div'); wrap.className = 'chips';
+      s.conditions.forEach((c) => {
+        const label = document.createElement('label'); label.className = 'chip';
+        const input = document.createElement('input'); input.type = 'checkbox'; input.value = c; input.name = 'condition';
+        label.appendChild(input); label.appendChild(document.createTextNode(c)); wrap.appendChild(label);
+      });
+      cond.appendChild(wrap);
+    }
+  }
+
+  function show(result, verdict, report) {
+    $('verdict').innerHTML = verdict ? '<span class="verdict ' + verdict + '">' + verdict + '</span>' : '';
+    $('report').textContent = report;
+    $('raw').textContent = JSON.stringify(result, null, 2);
+  }
+
+  async function run() {
+    const base = { service: $('service').value, purpose: $('purpose').value || null, context: checked('condition') };
+    try {
+      if (state.tab === 'evaluate') {
+        const r = await api('/api/evaluate', { ...base, data: checked('evaluate') });
+        show(r.decision, r.decision.verdict, r.report);
+      } else if (state.tab === 'plan') {
+        const r = await api('/api/plan', { ...base, held: checked('plan'), includeOptional: $('includeOptional').checked });
+        show(r.plan, r.plan.unsatisfiable.length ? 'INCOMPLETE' : 'COMPLIANT', r.report);
+      } else {
+        const r = await api('/api/minimize', { ...base, payload: JSON.parse($('payload').value), mapping: JSON.parse($('mapping').value), keepUnmapped: $('keepUnmapped').checked });
+        show(r.result, r.result.missing.length ? 'INCOMPLETE' : 'COMPLIANT', 'Minimized payload:\n' + JSON.stringify(r.result.minimized, null, 2) + '\n\n' + r.report);
+      }
+    } catch (e) {
+      $('verdict').innerHTML = '<span class="verdict error">ERROR</span>';
+      $('report').textContent = e.message;
+      $('raw').textContent = '';
+    }
+  }
+
+  document.querySelectorAll('[role=tab]').forEach((b) => b.addEventListener('click', () => {
+    state.tab = b.dataset.tab;
+    document.querySelectorAll('[role=tab]').forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+    document.querySelectorAll('[data-pane]').forEach((p) => p.classList.toggle('hidden', p.dataset.pane !== state.tab));
+  }));
+  $('run').addEventListener('click', run);
+  $('service').addEventListener('change', renderService);
+
+  state.services = await api('/api/services');
+  state.data = await api('/api/data');
+  $('service').innerHTML = state.services.map((s) => '<option' + (s.name === 'SubscriptionSignUp' ? ' selected' : '') + '>' + s.name + '</option>').join('');
+  renderService();
+  chips($('data-evaluate'), state.data, 'evaluate', true);
+  chips($('data-plan'), state.data, 'plan', true);
+  ['IDCard', 'Email', 'IsAdult'].forEach((n) => { const i = document.querySelector('input[name=evaluate][value=' + n + ']'); if (i) i.checked = true; });
+})();
+</script>
+</body>
+</html>

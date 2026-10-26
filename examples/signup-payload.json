@@ -1,0 +1,12 @@
+{
+  "id_card": {
+    "idNumber": "AK123456",
+    "fullName": "Maria Papadopoulou",
+    "dateOfBirth": "1990-05-17",
+    "fatherName": "Nikos",
+    "motherName": "Eleni"
+  },
+  "email": "maria@example.org",
+  "is_adult": true,
+  "newsletter": true
+}

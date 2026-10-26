@@ -1,0 +1,22 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2022-2026 Stylianos Toumpelis
+
+This license applies to the knowledge graph and its shapes:
+
+  src/main/resources/model.ttl
+  src/main/resources/shapes.ttl
+  docs/model.md (generated from model.ttl)
+
+You are free to share and adapt this material for any purpose, including
+commercially, provided you give appropriate credit, link to the license and
+indicate whether changes were made. The full legal text is at
+
+  https://creativecommons.org/licenses/by/4.0/legalcode
+
+Suggested attribution: "Data Minimization System knowledge graph" by
+Stylianos Toumpelis, licensed under CC BY 4.0,
+https://github.com/Stelios-T/Data-Minimization-System
+
+The software in this repository is licensed separately under the MIT License;
+see LICENSE.

@@ -1,0 +1,5 @@
+{
+  "dob": "2001-11-02",
+  "account": { "accountNumber": "GR16 0110 1250 0000 0001 2300 695", "accountBalance": 1540.25 },
+  "street_address": { "streetName": "Ermou", "streetNumber": "12", "city": "Athens" }
+}

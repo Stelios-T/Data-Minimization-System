@@ -1,0 +1,55 @@
+# SHACL shapes for the Data Minimization System knowledge graph.
+# License: CC BY 4.0 (see LICENSE-ONTOLOGY).
+
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix data: <http://example.org/dms/data#> .
+@prefix srv:  <http://example.org/dms/service#> .
+
+data:PersonalDataShape a sh:NodeShape ;
+    sh:targetClass data:PersonalData ;
+    sh:property [
+        sh:path data:sensitivity ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:datatype xsd:integer ; sh:minInclusive 1 ; sh:maxInclusive 5 ;
+        sh:message "every personal data type needs exactly one data:sensitivity between 1 and 5"
+    ] ;
+    sh:property [ sh:path data:isA ; sh:class data:PersonalData ;
+        sh:message "data:isA must point to a declared personal data type" ] ;
+    sh:property [ sh:path data:isPartOf ; sh:class data:PersonalData ;
+        sh:message "data:isPartOf must point to a declared personal data type" ] ;
+    sh:property [ sh:path data:isMoreDetailedThan ; sh:class data:PersonalData ;
+        sh:message "data:isMoreDetailedThan must point to a declared personal data type" ] .
+
+data:RelationSubjectShape a sh:NodeShape ;
+    sh:targetSubjectsOf data:isA , data:isPartOf , data:isMoreDetailedThan ;
+    sh:property [ sh:path rdf:type ; sh:hasValue data:PersonalData ;
+        sh:message "only declared personal data types may be the subject of a data relation" ] .
+
+srv:ServiceShape a sh:NodeShape ;
+    sh:targetClass srv:Service ;
+    sh:property [ sh:path srv:hasProcessing ; sh:class srv:Processing ;
+        sh:message "srv:hasProcessing must point to a declared processing" ] ;
+    sh:property [ sh:path srv:requires ; sh:class data:PersonalData ;
+        sh:message "srv:requires must point to a declared personal data type" ] ;
+    sh:property [ sh:path srv:mayRequires ; sh:class data:PersonalData ;
+        sh:message "srv:mayRequires must point to a declared personal data type" ] .
+
+srv:ProcessingShape a sh:NodeShape ;
+    sh:targetClass srv:Processing ;
+    sh:property [ sh:path srv:hasPurpose ; sh:minCount 1 ; sh:maxCount 1 ; sh:class srv:Purpose ;
+        sh:message "every processing needs exactly one declared purpose" ] ;
+    sh:property [ sh:path srv:requires ; sh:class data:PersonalData ;
+        sh:message "srv:requires must point to a declared personal data type" ] ;
+    sh:property [ sh:path srv:mayRequires ; sh:class data:PersonalData ;
+        sh:message "srv:mayRequires must point to a declared personal data type" ] ;
+    sh:property [ sh:path srv:requiresWhen ; sh:class srv:ConditionalRequirement ;
+        sh:message "srv:requiresWhen must point to a conditional requirement" ] .
+
+srv:ConditionalRequirementShape a sh:NodeShape ;
+    sh:targetClass srv:ConditionalRequirement ;
+    sh:property [ sh:path srv:condition ; sh:minCount 1 ; sh:class srv:Condition ;
+        sh:message "a conditional requirement needs at least one declared condition" ] ;
+    sh:property [ sh:path srv:requires ; sh:minCount 1 ; sh:class data:PersonalData ;
+        sh:message "a conditional requirement needs at least one personal data type" ] .

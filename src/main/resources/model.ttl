@@ -1,31 +1,68 @@
 # Knowledge graph for the Data Minimization System.
+# License: CC BY 4.0 (see LICENSE-ONTOLOGY).
 #
-# Two vocabularies:
+# Vocabularies
 #   data:  types of personal data and the relations between them
-#   srv:   services and the personal data they need
+#   srv:   services, their purposes, the processing they perform, and conditions
 #
-# Relation semantics (direction matters):
+# Relation semantics (direction matters)
 #   X data:isA Y                 X is a specialisation of Y.   Providing X satisfies a need for Y.
 #   X data:isPartOf Y            X is contained in Y.          Providing Y also hands over X.
 #   X data:isMoreDetailedThan Y  Y can be derived from X.      Providing X also hands over Y.
-#   S srv:requires D             S cannot work without D.
-#   S srv:mayRequires D          S can optionally use D.
+#   X data:sensitivity n         Disclosure weight 1 (low) .. 5 (Art. 9 special category).
+#
+#   S srv:hasProcessing P        Service S performs processing P.
+#   P srv:hasPurpose U           Processing P serves purpose U (exactly one).
+#   P srv:requires D             P cannot work without D.
+#   P srv:mayRequires D          P can optionally use D.
+#   P srv:requiresWhen [ srv:condition C ; srv:requires D ]
+#                                P requires D only while condition C holds.
+#   A service may also carry srv:requires / srv:mayRequires directly (no purpose).
+#
+# Alignment with the W3C Data Privacy Vocabulary (DPV, https://w3id.org/dpv) is expressed with
+# rdfs:subClassOf / rdfs:subPropertyOf on the schema and skos matches on the data types.
 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix dpv:  <https://w3id.org/dpv#> .
+@prefix pd:   <https://w3id.org/dpv/pd#> .
 @prefix data: <http://example.org/dms/data#> .
 @prefix srv:  <http://example.org/dms/service#> .
+
+<http://example.org/dms/> a owl:Ontology ;
+    rdfs:label "Data Minimization System knowledge graph" ;
+    dct:license <https://creativecommons.org/licenses/by/4.0/> .
 
 #################################################################
 # Schema
 #################################################################
 
 data:PersonalData a rdfs:Class ;
-    rdfs:label "Personal data type" .
+    rdfs:label "Personal data type" ;
+    rdfs:subClassOf dpv:PersonalData .
 
 srv:Service a rdfs:Class ;
-    rdfs:label "Service" .
+    rdfs:label "Service" ;
+    rdfs:subClassOf dpv:Service .
+
+srv:Purpose a rdfs:Class ;
+    rdfs:label "Purpose of processing" ;
+    rdfs:subClassOf dpv:Purpose .
+
+srv:Processing a rdfs:Class ;
+    rdfs:label "Processing performed by a service for one purpose" ;
+    rdfs:subClassOf dpv:Process .
+
+srv:Condition a rdfs:Class ;
+    rdfs:label "Context under which an additional requirement applies" ;
+    rdfs:subClassOf dpv:Context .
+
+srv:ConditionalRequirement a rdfs:Class ;
+    rdfs:label "A requirement that holds only under a condition" .
 
 data:isA a rdf:Property , owl:TransitiveProperty ;
     rdfs:domain data:PersonalData ; rdfs:range data:PersonalData ;
@@ -39,110 +76,192 @@ data:isMoreDetailedThan a rdf:Property , owl:TransitiveProperty ;
     rdfs:domain data:PersonalData ; rdfs:range data:PersonalData ;
     rdfs:comment "The object can be derived from the subject. Providing the subject also discloses the object." .
 
+data:sensitivity a rdf:Property , owl:DatatypeProperty ;
+    rdfs:domain data:PersonalData ; rdfs:range xsd:integer ;
+    rdfs:comment "Disclosure weight from 1 (low) to 5 (GDPR Art. 9 special category)." .
+
+srv:hasProcessing a rdf:Property ;
+    rdfs:domain srv:Service ; rdfs:range srv:Processing ;
+    rdfs:subPropertyOf dpv:hasProcessing .
+
+srv:hasPurpose a rdf:Property ;
+    rdfs:domain srv:Processing ; rdfs:range srv:Purpose ;
+    rdfs:subPropertyOf dpv:hasPurpose .
+
 srv:requires a rdf:Property ;
-    rdfs:domain srv:Service ; rdfs:range data:PersonalData ;
-    rdfs:comment "Personal data without which the service cannot be delivered." .
+    rdfs:range data:PersonalData ;
+    rdfs:subPropertyOf dpv:hasPersonalData ;
+    dpv:hasNecessity dpv:Required ;
+    rdfs:comment "Personal data without which the processing cannot be carried out." .
 
 srv:mayRequires a rdf:Property ;
-    rdfs:domain srv:Service ; rdfs:range data:PersonalData ;
-    rdfs:comment "Personal data the service can optionally use." .
+    rdfs:range data:PersonalData ;
+    rdfs:subPropertyOf dpv:hasPersonalData ;
+    dpv:hasNecessity dpv:Optional ;
+    rdfs:comment "Personal data the processing can optionally use." .
+
+srv:requiresWhen a rdf:Property ;
+    rdfs:domain srv:Processing ; rdfs:range srv:ConditionalRequirement .
+
+srv:condition a rdf:Property ;
+    rdfs:domain srv:ConditionalRequirement ; rdfs:range srv:Condition ;
+    rdfs:subPropertyOf dpv:hasContext .
 
 #################################################################
-# Personal data types
+# Personal data types   (sensitivity 1 low .. 5 special category)
 #################################################################
 
-data:Identity        a data:PersonalData .
-data:FullName        a data:PersonalData ; data:isA data:Identity .
-data:FirstName       a data:PersonalData ; data:isPartOf data:FullName .
-data:MiddleName      a data:PersonalData ; data:isPartOf data:FullName .
-data:LastName        a data:PersonalData ; data:isPartOf data:FullName .
+data:Identity        a data:PersonalData ; data:sensitivity 3 ; skos:closeMatch pd:Identifying .
+data:FullName        a data:PersonalData ; data:sensitivity 2 ; data:isA data:Identity ; skos:exactMatch pd:Name .
+data:FirstName       a data:PersonalData ; data:sensitivity 1 ; data:isPartOf data:FullName ; skos:broadMatch pd:Name .
+data:MiddleName      a data:PersonalData ; data:sensitivity 1 ; data:isPartOf data:FullName ; skos:broadMatch pd:Name .
+data:LastName        a data:PersonalData ; data:sensitivity 1 ; data:isPartOf data:FullName ; skos:broadMatch pd:Name .
 
-data:IDCard          a data:PersonalData ; data:isA data:Identity .
-data:IDNumber        a data:PersonalData ; data:isPartOf data:IDCard .
-data:PersonalSign    a data:PersonalData ; data:isPartOf data:IDCard .
-data:FatherName      a data:PersonalData ; data:isPartOf data:IDCard .
-data:MotherName      a data:PersonalData ; data:isPartOf data:IDCard .
+data:IDCard          a data:PersonalData ; data:sensitivity 4 ; data:isA data:Identity ; skos:closeMatch pd:OfficialID .
+data:IDNumber        a data:PersonalData ; data:sensitivity 3 ; data:isPartOf data:IDCard ; skos:closeMatch pd:OfficialID .
+data:PersonalSign    a data:PersonalData ; data:sensitivity 3 ; data:isPartOf data:IDCard ;
+    rdfs:comment "no DPV-PD counterpart" .
+data:FatherName      a data:PersonalData ; data:sensitivity 2 ; data:isPartOf data:IDCard ;
+    rdfs:comment "no DPV-PD counterpart" .
+data:MotherName      a data:PersonalData ; data:sensitivity 2 ; data:isPartOf data:IDCard ;
+    rdfs:comment "no DPV-PD counterpart" .
 
-data:Passport        a data:PersonalData ; data:isA data:Identity .
-data:PassportNumber  a data:PersonalData ; data:isPartOf data:Passport .
+data:Passport        a data:PersonalData ; data:sensitivity 4 ; data:isA data:Identity ; skos:exactMatch pd:Passport .
+data:PassportNumber  a data:PersonalData ; data:sensitivity 3 ; data:isPartOf data:Passport ; skos:broadMatch pd:Passport .
 
 # A full name and a date of birth are printed on both documents; a passport also states the country.
 data:FullName        data:isPartOf data:IDCard , data:Passport .
 data:DateOfBirth     data:isPartOf data:IDCard , data:Passport .
 data:Country         data:isPartOf data:Passport .
 
-data:Contact         a data:PersonalData .
-data:TelephoneNumber a data:PersonalData ; data:isA data:Contact .
-data:Email           a data:PersonalData ; data:isA data:Contact .
-data:FaxNumber       a data:PersonalData ; data:isA data:Contact .
+data:Contact         a data:PersonalData ; data:sensitivity 2 ; skos:exactMatch pd:Contact .
+data:TelephoneNumber a data:PersonalData ; data:sensitivity 2 ; data:isA data:Contact ; skos:exactMatch pd:TelephoneNumber .
+data:Email           a data:PersonalData ; data:sensitivity 2 ; data:isA data:Contact ; skos:exactMatch pd:EmailAddress .
+data:FaxNumber       a data:PersonalData ; data:sensitivity 1 ; data:isA data:Contact ;
+    rdfs:comment "no DPV-PD counterpart" .
 
-data:Location        a data:PersonalData .
-data:StreetAddress   a data:PersonalData ; data:isA data:Location ; data:isMoreDetailedThan data:City .
-data:StreetName      a data:PersonalData ; data:isPartOf data:StreetAddress .
-data:StreetNumber    a data:PersonalData ; data:isPartOf data:StreetAddress .
-data:City            a data:PersonalData ; data:isA data:Location ; data:isMoreDetailedThan data:Country .
-data:Country         a data:PersonalData ; data:isA data:Location .
+data:Location        a data:PersonalData ; data:sensitivity 2 ; skos:exactMatch pd:Location .
+data:StreetAddress   a data:PersonalData ; data:sensitivity 3 ; data:isA data:Location ; data:isMoreDetailedThan data:City ;
+    skos:closeMatch pd:PhysicalAddress .
+data:StreetName      a data:PersonalData ; data:sensitivity 2 ; data:isPartOf data:StreetAddress ; skos:exactMatch pd:Street .
+data:StreetNumber    a data:PersonalData ; data:sensitivity 1 ; data:isPartOf data:StreetAddress ; skos:exactMatch pd:HouseNumber .
+data:City            a data:PersonalData ; data:sensitivity 2 ; data:isA data:Location ; data:isMoreDetailedThan data:Country ;
+    skos:exactMatch pd:City .
+data:Country         a data:PersonalData ; data:sensitivity 1 ; data:isA data:Location ; skos:exactMatch pd:Country .
 
-data:Age             a data:PersonalData .
-data:IsAdult         a data:PersonalData ; data:isA data:Age .
-data:ExactAge        a data:PersonalData ; data:isA data:Age ; data:isMoreDetailedThan data:IsAdult .
-data:DateOfBirth     a data:PersonalData ; data:isA data:Age ; data:isMoreDetailedThan data:ExactAge .
-data:DayOfBirth      a data:PersonalData ; data:isPartOf data:DateOfBirth .
-data:MonthOfBirth    a data:PersonalData ; data:isPartOf data:DateOfBirth .
-data:YearOfBirth     a data:PersonalData ; data:isPartOf data:DateOfBirth .
+data:Age             a data:PersonalData ; data:sensitivity 2 ; skos:exactMatch pd:Age .
+data:IsAdult         a data:PersonalData ; data:sensitivity 1 ; data:isA data:Age ; skos:closeMatch pd:AgeRange .
+data:ExactAge        a data:PersonalData ; data:sensitivity 2 ; data:isA data:Age ; data:isMoreDetailedThan data:IsAdult ;
+    skos:closeMatch pd:Age .
+data:DateOfBirth     a data:PersonalData ; data:sensitivity 3 ; data:isA data:Age ; data:isMoreDetailedThan data:ExactAge ;
+    skos:exactMatch pd:BirthDate .
+data:DayOfBirth      a data:PersonalData ; data:sensitivity 1 ; data:isPartOf data:DateOfBirth ; skos:broadMatch pd:BirthDate .
+data:MonthOfBirth    a data:PersonalData ; data:sensitivity 1 ; data:isPartOf data:DateOfBirth ; skos:broadMatch pd:BirthDate .
+data:YearOfBirth     a data:PersonalData ; data:sensitivity 2 ; data:isPartOf data:DateOfBirth ; skos:broadMatch pd:BirthDate .
 
-data:Billing         a data:PersonalData .
-data:Account         a data:PersonalData ; data:isA data:Billing .
-data:AccountNumber   a data:PersonalData ; data:isPartOf data:Account .
-data:AccountBalance  a data:PersonalData ; data:isPartOf data:Account .
+data:Billing         a data:PersonalData ; data:sensitivity 3 ; skos:closeMatch pd:Financial .
+data:Account         a data:PersonalData ; data:sensitivity 4 ; data:isA data:Billing ; skos:exactMatch pd:BankAccount .
+data:AccountNumber   a data:PersonalData ; data:sensitivity 3 ; data:isPartOf data:Account ; skos:exactMatch pd:AccountIdentifier .
+data:AccountBalance  a data:PersonalData ; data:sensitivity 4 ; data:isPartOf data:Account ;
+    rdfs:comment "no DPV-PD counterpart" .
 
 #################################################################
-# Services and the data they need
+# Purposes
 #################################################################
 
-srv:SignInvoice a srv:Service ;
+srv:AccountCreation      a srv:Purpose ; rdfs:label "Create a customer account" .
+srv:CustomerSupport      a srv:Purpose ; rdfs:label "Contact the customer for support" .
+srv:Payment              a srv:Purpose ; rdfs:label "Collect a payment" .
+srv:PaymentReceipt       a srv:Purpose ; rdfs:label "Send a payment receipt" .
+srv:AgeVerification      a srv:Purpose ; rdfs:label "Verify that the customer is an adult" .
+srv:IdentityVerification a srv:Purpose ; rdfs:label "Verify the customer's identity against a travel document" .
+srv:LocalSearch          a srv:Purpose ; rdfs:label "Find results near the customer" .
+srv:Delivery             a srv:Purpose ; rdfs:label "Deliver goods to the customer" .
+srv:DeliveryNotification a srv:Purpose ; rdfs:label "Notify the customer about a delivery" .
+srv:OrderFulfilment      a srv:Purpose ; rdfs:label "Fulfil an order" .
+srv:ContractSigning      a srv:Purpose ; rdfs:label "Sign a legally binding document" .
+
+#################################################################
+# Conditions
+#################################################################
+
+srv:ContainsAlcohol       a srv:Condition ; rdfs:label "The order or venue involves alcohol" .
+srv:PaysByBankAccount     a srv:Condition ; rdfs:label "The customer pays by bank account" .
+srv:InternationalDelivery a srv:Condition ; rdfs:label "The delivery crosses a border (the courier needs a phone number for customs)" .
+
+#################################################################
+# Services and their processing
+#################################################################
+
+srv:SignInvoice a srv:Service ; srv:hasProcessing srv:SignInvoice_ContractSigning .
+srv:SignInvoice_ContractSigning a srv:Processing ; srv:hasPurpose srv:ContractSigning ;
     srv:requires    data:PersonalSign ;
     srv:mayRequires data:FirstName , data:LastName .
 
-srv:LocalInfoFinder a srv:Service ;
+srv:LocalInfoFinder a srv:Service ; srv:hasProcessing srv:LocalInfoFinder_LocalSearch .
+srv:LocalInfoFinder_LocalSearch a srv:Processing ; srv:hasPurpose srv:LocalSearch ;
     srv:requires    data:City .
 
-srv:MapProvision a srv:Service ;
-    srv:requires    data:City ;
-    srv:mayRequires data:Country .
+srv:MapProvision a srv:Service ; srv:hasProcessing srv:MapProvision_LocalSearch .
+srv:MapProvision_LocalSearch a srv:Processing ; srv:hasPurpose srv:LocalSearch ;
+    srv:requires    data:City .
 
-srv:ShopFinder a srv:Service ;
+srv:ShopFinder a srv:Service ; srv:hasProcessing srv:ShopFinder_LocalSearch .
+srv:ShopFinder_LocalSearch a srv:Processing ; srv:hasPurpose srv:LocalSearch ;
     srv:requires    data:City .
 
 srv:RestaurantFinder a srv:Service ;
-    srv:requires    data:City ;
-    srv:mayRequires data:IsAdult , data:ExactAge .
+    srv:hasProcessing srv:RestaurantFinder_LocalSearch , srv:RestaurantFinder_AgeVerification .
+srv:RestaurantFinder_LocalSearch a srv:Processing ; srv:hasPurpose srv:LocalSearch ;
+    srv:requires    data:City .
+srv:RestaurantFinder_AgeVerification a srv:Processing ; srv:hasPurpose srv:AgeVerification ;
+    srv:requiresWhen [ a srv:ConditionalRequirement ; srv:condition srv:ContainsAlcohol ; srv:requires data:IsAdult ] .
 
 srv:OrderPlacement a srv:Service ;
-    srv:requires    data:FirstName , data:LastName , data:Email ;
-    srv:mayRequires data:AccountNumber .
+    srv:hasProcessing srv:OrderPlacement_OrderFulfilment , srv:OrderPlacement_Payment .
+srv:OrderPlacement_OrderFulfilment a srv:Processing ; srv:hasPurpose srv:OrderFulfilment ;
+    srv:requires    data:FirstName , data:LastName , data:Email .
+srv:OrderPlacement_Payment a srv:Processing ; srv:hasPurpose srv:Payment ;
+    srv:requiresWhen [ a srv:ConditionalRequirement ; srv:condition srv:PaysByBankAccount ; srv:requires data:AccountNumber ] .
 
-srv:EntryAllowance a srv:Service ;
+srv:EntryAllowance a srv:Service ; srv:hasProcessing srv:EntryAllowance_AgeVerification .
+srv:EntryAllowance_AgeVerification a srv:Processing ; srv:hasPurpose srv:AgeVerification ;
     srv:requires    data:IsAdult .
 
-srv:CheckoutPay a srv:Service ;
+srv:CheckoutPay a srv:Service ; srv:hasProcessing srv:CheckoutPay_Payment .
+srv:CheckoutPay_Payment a srv:Processing ; srv:hasPurpose srv:Payment ;
     srv:requires    data:AccountNumber , data:AccountBalance .
 
 srv:CheckoutPayAdult a srv:Service ;
-    srv:requires    data:IsAdult , data:AccountNumber , data:AccountBalance .
+    srv:hasProcessing srv:CheckoutPayAdult_Payment , srv:CheckoutPayAdult_AgeVerification .
+srv:CheckoutPayAdult_Payment a srv:Processing ; srv:hasPurpose srv:Payment ;
+    srv:requires    data:AccountNumber , data:AccountBalance .
+srv:CheckoutPayAdult_AgeVerification a srv:Processing ; srv:hasPurpose srv:AgeVerification ;
+    srv:requires    data:IsAdult .
 
-srv:AirportCheckIn a srv:Service ;
+srv:AirportCheckIn a srv:Service ; srv:hasProcessing srv:AirportCheckIn_IdentityVerification .
+srv:AirportCheckIn_IdentityVerification a srv:Processing ; srv:hasPurpose srv:IdentityVerification ;
     srv:requires    data:PassportNumber , data:FirstName , data:LastName ;
     srv:mayRequires data:IDNumber .
 
 srv:SubscriptionPay a srv:Service ;
-    srv:requires    data:AccountNumber , data:AccountBalance ;
+    srv:hasProcessing srv:SubscriptionPay_Payment , srv:SubscriptionPay_PaymentReceipt .
+srv:SubscriptionPay_Payment a srv:Processing ; srv:hasPurpose srv:Payment ;
+    srv:requires    data:AccountNumber , data:AccountBalance .
+srv:SubscriptionPay_PaymentReceipt a srv:Processing ; srv:hasPurpose srv:PaymentReceipt ;
     srv:mayRequires data:Email .
 
 srv:SubscriptionSignUp a srv:Service ;
-    srv:requires    data:FirstName , data:LastName , data:Email ;
+    srv:hasProcessing srv:SubscriptionSignUp_AccountCreation , srv:SubscriptionSignUp_CustomerSupport .
+srv:SubscriptionSignUp_AccountCreation a srv:Processing ; srv:hasPurpose srv:AccountCreation ;
+    srv:requires    data:FirstName , data:LastName , data:Email .
+srv:SubscriptionSignUp_CustomerSupport a srv:Processing ; srv:hasPurpose srv:CustomerSupport ;
     srv:mayRequires data:TelephoneNumber .
 
 srv:PostalFormFilling a srv:Service ;
-    srv:requires    data:Country , data:City , data:StreetName , data:StreetNumber ;
-    srv:mayRequires data:Email , data:TelephoneNumber .
+    srv:hasProcessing srv:PostalFormFilling_Delivery , srv:PostalFormFilling_DeliveryNotification .
+srv:PostalFormFilling_Delivery a srv:Processing ; srv:hasPurpose srv:Delivery ;
+    srv:requires    data:City , data:StreetName , data:StreetNumber ;
+    srv:requiresWhen [ a srv:ConditionalRequirement ; srv:condition srv:InternationalDelivery ; srv:requires data:TelephoneNumber ] .
+srv:PostalFormFilling_DeliveryNotification a srv:Processing ; srv:hasPurpose srv:DeliveryNotification ;
+    srv:mayRequires data:Email .

@@ -11,7 +11,7 @@ public enum Verdict {
     /** Some required data are missing and some provided data are excessive. */
     INCOMPLETE_AND_EXCESSIVE;
 
-    static Verdict of(boolean complete, boolean minimal) {
+    public static Verdict of(boolean complete, boolean minimal) {
         if (complete) {
             return minimal ? COMPLIANT : EXCESSIVE;
         }

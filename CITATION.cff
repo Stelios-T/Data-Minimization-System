@@ -1,0 +1,29 @@
+# Citation metadata for this repository (https://citation-file-format.github.io/).
+# TODO: fill in the thesis title, university, defence year and the URL or DOI of the PDF.
+cff-version: 1.2.0
+message: "If you use this software or the knowledge graph, please cite the thesis and the repository."
+type: software
+title: "Data Minimization System: intelligent application of the GDPR data minimization principle"
+authors:
+  - family-names: Toumpelis
+    given-names: Stylianos
+repository-code: "https://github.com/Stelios-T/Data-Minimization-System"
+license: MIT
+keywords:
+  - GDPR
+  - data minimization
+  - knowledge graph
+  - RDF
+  - SPARQL
+  - Data Privacy Vocabulary
+preferred-citation:
+  type: thesis
+  title: "Intelligent application of the principle of data minimization"   # TODO: exact thesis title
+  authors:
+    - family-names: Toumpelis
+      given-names: Stylianos
+  year: 2022                                                              # TODO: defence year
+  institution:
+    name: "University of Thessaly - Department of Computer Science"  # TODO: exact university name
+  thesis-type: "Bachelor's thesis"
+  url: "https://ir.lib.uth.gr/xmlui/bitstream/handle/11615/60378/26139.pdf"

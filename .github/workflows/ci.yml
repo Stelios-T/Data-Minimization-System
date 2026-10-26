@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [17, 21]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - name: Build, test and package
+        run: mvn -B package
+      - name: Validate the ontology
+        run: java -jar target/dms.jar --validate
+      - name: Check that the committed diagrams are fresh
+        run: |
+          java -jar target/dms.jar --diagrams --out /tmp/diagrams
+          diff /tmp/diagrams/model.md docs/model.md
+      - name: Smoke-test the HTTP API
+        run: |
+          java -jar target/dms.jar --serve --port 7070 &
+          for i in $(seq 1 30); do curl -sf localhost:7070/api/services >/dev/null && break; sleep 1; done
+          curl -sf -X POST localhost:7070/api/evaluate -H 'content-type: application/json' \
+               -d '{"service":"SubscriptionSignUp","data":["IDCard","Email"]}' | grep -q '"verdict"'
+          kill %1
+      - name: Upload the jar
+        if: matrix.java == 17
+        uses: actions/upload-artifact@v4
+        with:
+          name: dms.jar
+          path: target/dms.jar

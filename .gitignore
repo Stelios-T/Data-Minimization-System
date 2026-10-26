@@ -7,3 +7,5 @@
 .settings/
 .vscode/
 .DS_Store
+# jqwik stores failing samples here
+.jqwik-database

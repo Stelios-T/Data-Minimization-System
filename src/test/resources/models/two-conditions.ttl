@@ -1,0 +1,12 @@
+@prefix data: <http://example.org/dms/data#> .
+@prefix srv:  <http://example.org/dms/service#> .
+data:A a data:PersonalData ; data:sensitivity 1 .
+data:D a data:PersonalData ; data:sensitivity 1 .
+srv:U a srv:Purpose .
+srv:CondA a srv:Condition .
+srv:CondB a srv:Condition .
+srv:S a srv:Service ; srv:hasProcessing srv:P .
+srv:P a srv:Processing ; srv:hasPurpose srv:U ;
+    srv:requires data:A ;
+    srv:requiresWhen [ a srv:ConditionalRequirement ; srv:condition srv:CondA ; srv:requires data:D ] ;
+    srv:requiresWhen [ a srv:ConditionalRequirement ; srv:condition srv:CondB ; srv:requires data:D ] .

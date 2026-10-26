@@ -1,0 +1,13 @@
+{
+  "title": "Data Minimization System: intelligent application of the GDPR data minimization principle",
+  "upload_type": "software",
+  "creators": [
+    { "name": "Toumpelis, Stylianos" }
+  ],
+  "description": "A knowledge-graph based system that decides whether personal data offered to a service are limited to what is necessary for a purpose (GDPR Art. 5(1)(c)), plans minimal disclosure on the user's side and minimizes JSON payloads. Companion software to the thesis 'Intelligent application of the principle of data minimization'.",
+  "license": "MIT",
+  "keywords": ["GDPR", "data minimization", "knowledge graph", "RDF", "SPARQL", "DPV"],
+  "related_identifiers": [
+    { "identifier": "https://github.com/Stelios-T/Data-Minimization-System", "relation": "isSupplementTo", "scheme": "url" }
+  ]
+}

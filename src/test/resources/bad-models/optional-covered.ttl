@@ -1,0 +1,11 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix data: <http://example.org/dms/data#> .
+@prefix srv: <http://example.org/dms/service#> .
+data:A a data:PersonalData ; data:sensitivity 1 .
+data:B a data:PersonalData ; data:sensitivity 1 .
+srv:U a srv:Purpose .
+srv:C a srv:Condition .
+
+data:B data:isPartOf data:A .
+srv:S a srv:Service ; srv:hasProcessing srv:P .
+srv:P a srv:Processing ; srv:hasPurpose srv:U ; srv:requires data:A ; srv:mayRequires data:B .
